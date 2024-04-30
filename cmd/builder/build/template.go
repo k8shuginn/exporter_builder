@@ -37,6 +37,7 @@ var (
 	collectorTemplate = parseTemplate("collector.go", collectorBytes)
 )
 
+// GenerateMain generates files(main.go, collector.go, go.mod)
 func parseTemplate(name string, bytes []byte) *template.Template {
 	return template.Must(template.New(name).Parse(string(bytes)))
 }

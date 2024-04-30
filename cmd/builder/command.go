@@ -36,6 +36,7 @@ var (
 	k          = koanf.New(".")
 )
 
+// Command create a new builder command
 func Command() (*cobra.Command, error) {
 	cmd := &cobra.Command{
 		Use:     "builder",
@@ -59,6 +60,7 @@ func Command() (*cobra.Command, error) {
 	return cmd, err
 }
 
+// initConfig load config from file
 func initConfig() error {
 	if err := k.Load(file.Provider(configPath), yaml.Parser()); err != nil {
 		return fmt.Errorf("error loading config: %v", err)

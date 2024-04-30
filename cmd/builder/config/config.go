@@ -14,6 +14,7 @@
 
 package config
 
+// Config represents the configuration of the exporter.
 type Config struct {
 	Name       string   `mapstructure:"name"`
 	Module     string   `mapstructure:"module"`
@@ -23,8 +24,8 @@ type Config struct {
 // NewConfig returns a new Config.
 func NewConfig() *Config {
 	return &Config{
-		Name:   "diy_exporter",
-		Module: "diy_exporter",
+		Name:   "DIY_exporter",
+		Module: "DIY_exporter",
 		Collectors: []string{
 			"sample1",
 			"sample2",
