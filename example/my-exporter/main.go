@@ -8,12 +8,11 @@ import (
 	"strings"
 
 	"github.com/go-kit/log"
+	instance "github.com/my-project/my-exporter/collector/instance"
+	vector "github.com/my-project/my-exporter/collector/vector"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/promlog"
-    {{ range $key, $value := .Collectors }}
-    {{ $value }} "{{ $.Module }}/collector/{{ $value }}"
-    {{- end }}
 )
 
 var (
@@ -63,16 +62,14 @@ func newLogger() log.Logger {
 
 func main() {
 	setFlags(
-	    {{- range $key, $value := .Collectors }}
-	    {{ $value }}.SetFlags,
-        {{- end }}
+		vector.SetFlags,
+		instance.SetFlags,
 	)
 	logger := newLogger()
 
 	reg := prometheus.NewRegistry()
-	{{- range $key, $value := .Collectors }}
-	reg.MustRegister({{ $value }}.NewCollector())
-    {{- end }}
+	reg.MustRegister(vector.NewCollector())
+	reg.MustRegister(instance.NewCollector())
 
 	http.Handle(endpoint, promhttp.HandlerFor(reg, promhttp.HandlerOpts{
 		ErrorLog:      stdlog.New(log.NewStdlibAdapter(logger), "", 0),

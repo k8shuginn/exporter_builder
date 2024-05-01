@@ -1,0 +1,5 @@
+name: my-exporter
+module: github.com/my-project/my-exporter
+collectors:
+  - vector
+  - instance
