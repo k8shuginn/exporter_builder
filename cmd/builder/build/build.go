@@ -1,3 +1,17 @@
+// Copyright 2024 k8shuginn exporter_builder
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package build
 
 import (
@@ -9,6 +23,7 @@ import (
 	"github.com/k8shuginn/exporter_builder/cmd/builder/config"
 )
 
+// GenerateExporter generates exporter code
 func GenerateExporter(cfg *config.Config) error {
 	cfg.Collectors = removeDuplicateCollector(cfg.Collectors)
 	if err := createDirectory(cfg.Name, cfg.Collectors); err != nil {
@@ -27,6 +42,7 @@ func GenerateExporter(cfg *config.Config) error {
 	return nil
 }
 
+// removeDuplicateCollector removes duplicate collectors
 func removeDuplicateCollector(collectors []string) []string {
 	keys := make(map[string]bool)
 	var result []string
@@ -41,6 +57,7 @@ func removeDuplicateCollector(collectors []string) []string {
 	return result
 }
 
+// createDirectory creates exporter directory
 func createDirectory(name string, collectors []string) error {
 	if _, err := os.Stat(name); os.IsNotExist(err) {
 		if err := os.Mkdir(name, 0755); err != nil {
@@ -59,6 +76,7 @@ func createDirectory(name string, collectors []string) error {
 	return nil
 }
 
+// generateMain generates main.go file
 func generateMain(cfg *config.Config) error {
 	out, err := os.Create(filepath.Clean(filepath.Join(cfg.Name, mainTemplate.Name())))
 	if err != nil {
@@ -68,6 +86,7 @@ func generateMain(cfg *config.Config) error {
 	return mainTemplate.Execute(out, cfg)
 }
 
+// generateCollector generates collector.go file
 func generateCollector(cfg *config.Config) error {
 	for _, collector := range cfg.Collectors {
 		out, err := os.Create(filepath.Clean(filepath.Join(cfg.Name, "collector", collector, collectorTemplate.Name())))
@@ -83,6 +102,7 @@ func generateCollector(cfg *config.Config) error {
 	return nil
 }
 
+// generateGoMod generates go.mod file
 func generateGoMod(cfg *config.Config) error {
 	out, err := os.Create(filepath.Clean(filepath.Join(cfg.Name, goModTemplate.Name())))
 	if err != nil {
